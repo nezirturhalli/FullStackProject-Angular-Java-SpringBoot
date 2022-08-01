@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  db_employee:
+    image: mysql
+    restart: on-failure
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_employee
+    ports:
+      - "3306:3306"
