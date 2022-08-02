@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.Objects;
 
-@Table(name = "employees")
+@Table(name = "employees",schema = "public")
 @Entity
 @Getter
 @Setter

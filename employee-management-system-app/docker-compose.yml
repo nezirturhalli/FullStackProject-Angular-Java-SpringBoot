@@ -1,12 +1,37 @@
 version: '3.8'
 services:
-  db_employee:
-    image: mysql
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1
+    ports:
+      - "5432:5432"
+
+  app-ems:
+    image: 'employee-management-system'
+    container_name: app-ems
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    build:
+      context: .
     restart: on-failure
     environment:
-      MYSQL_USER: user
-      MYSQL_PASSWORD: root
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: db_employee
-    ports:
-      - "3306:3306"
+      - SERVER
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres?useSSL=false
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+
+
+
+
+
+
+
+
+
