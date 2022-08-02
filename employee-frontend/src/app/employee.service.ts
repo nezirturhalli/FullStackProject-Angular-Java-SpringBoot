@@ -1,6 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { Employee } from './employee';
 
 @Injectable({
@@ -12,9 +17,52 @@ export class EmployeeService {
   }
   private baseUrl: string = 'http://localhost:1210/api/v1/employees';
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
   getEmployeesList(): Observable<Employee[]> {
-    return this.httpClient.get<Employee[]>(this.baseUrl);
+    return this.http.get<Employee[]>(this.baseUrl);
+  }
+
+  createEmployee(employee: Employee): Observable<Employee> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Token',
+      }),
+    };
+
+    return this.http.post<Employee>(this.baseUrl, employee, httpOptions).pipe(
+      tap((data) => console.log(data)),
+      catchError(this.handleError)
+    );
+  }
+
+
+  private handleError(error: HttpErrorResponse) {
+    if (error.error instanceof ErrorEvent) {
+      // A client-side or network error occurred. Handle it accordingly.
+      console.error('An error occurred:', error.error.message);
+    } else {
+      // The backend returned an unsuccessful response code.
+      // The response body may contain clues as to
+
+      switch (error.status) {
+        case 200:
+          console.log('OK');
+          break;
+        case 404:
+          console.log('NOT_FOUND');
+          break;
+        case 200:
+          console.log('ACCESS_DENIED');
+          break;
+        case 500:
+          console.log('INTERNAL_SERVER_ERROR');
+          break;
+        default:
+          console.log('Something went wrong');
+      }
+    }
+    return throwError(error.message);
   }
 }
