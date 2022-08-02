@@ -10,6 +10,7 @@ import { EmployeeService } from '../employee.service';
 })
 export class CreateEmployeeComponent implements OnInit {
   employee: Employee = new Employee();
+  submitted: boolean = false;
   constructor(
     private employeeService: EmployeeService,
     private router: Router
@@ -17,22 +18,27 @@ export class CreateEmployeeComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  saveEmployee() {
-    this.employeeService.createEmployee(this.employee).subscribe(
-      (data) => {
-        console.log(data);
-        this.goToEmployeeList(); 
-      },
-      (error) => console.log(error)
-    );
+  newEmployee(): void {
+    this.submitted = false;
+    this.employee = new Employee();
+  }
+
+  save() {
+    this.employeeService
+    .createEmployee(this.employee).subscribe(data => {
+      console.log(data)
+      this.employee = new Employee();
+      this.goToEmployeeList();
+    }, 
+    error => console.log(error));
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    this.save();    
   }
 
   goToEmployeeList() {
     this.router.navigate(['/employees']);
-  }
-
-  onSubmit() {
-    this.saveEmployee();
-    console.log(this.employee);
   }
 }

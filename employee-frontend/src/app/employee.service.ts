@@ -17,52 +17,25 @@ export class EmployeeService {
   }
   private baseUrl: string = 'http://localhost:1210/api/v1/employees';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getEmployeesList(): Observable<Employee[]> {
-    return this.http.get<Employee[]>(this.baseUrl);
+  getEmployeeById(employeeId: number): Observable<any> {
+    return this.http.get(`${this.baseUrl}/${employeeId}`);
   }
 
-  createEmployee(employee: Employee): Observable<Employee> {
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: 'Token',
-      }),
-    };
-
-    return this.http.post<Employee>(this.baseUrl, employee, httpOptions).pipe(
-      tap((data) => console.log(data)),
-      catchError(this.handleError)
-    );
+  createEmployee(employee: Object): Observable<Object> {
+    return this.http.post(`${this.baseUrl}`, employee);
   }
 
+  updateEmployee(employeeId: number, value: any): Observable<Object> {
+    return this.http.put(`${this.baseUrl}/${employeeId}`, value);
+  }
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-    } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to
+  deleteEmployee(employeeId: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/${employeeId}`, { responseType: 'text' });
+  }
 
-      switch (error.status) {
-        case 200:
-          console.log('OK');
-          break;
-        case 404:
-          console.log('NOT_FOUND');
-          break;
-        case 200:
-          console.log('ACCESS_DENIED');
-          break;
-        case 500:
-          console.log('INTERNAL_SERVER_ERROR');
-          break;
-        default:
-          console.log('Something went wrong');
-      }
-    }
-    return throwError(error.message);
+  getEmployeesList(): Observable<any> {
+    return this.http.get(`${this.baseUrl}`);
   }
 }

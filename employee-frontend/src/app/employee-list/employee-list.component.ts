@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { Employee } from '../employee';
 import { EmployeeService } from '../employee.service';
 
@@ -8,16 +10,34 @@ import { EmployeeService } from '../employee.service';
   styleUrls: ['./employee-list.component.css'],
 })
 export class EmployeeListComponent implements OnInit {
-  employees: Employee[] | undefined;
+  employees: Observable<Employee[]>;
 
-  constructor(private employeeService: EmployeeService) {}
+  constructor(private employeeService: EmployeeService,
+    private router: Router) {}
 
-  ngOnInit(): void {
-    this.getEmployees();
+  ngOnInit() {
+    this.reloadData();
   }
-  private getEmployees() {
-    this.employeeService.getEmployeesList().subscribe((data) => {
-      this.employees = data;
-    });
+
+  reloadData() {
+    this.employees = this.employeeService.getEmployeesList();
+  }
+
+  deleteEmployee(employeeId: number) {
+    this.employeeService.deleteEmployee(employeeId)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.reloadData();
+        },
+        error => console.log(error));
+  }
+
+  employeeDetails(employeeId: number){
+    this.router.navigate(['details', employeeId]);
+  }
+
+  updateEmployee(employeeId: number){
+    this.router.navigate(['update', employeeId]);
   }
 }
