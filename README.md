@@ -7,5 +7,5 @@
 - Open API(Swagger)
 - Docker 
 ## Frontend Technologies
-- Angluar 12
+- Angular 12
 - Bootsrat 5.0.2
